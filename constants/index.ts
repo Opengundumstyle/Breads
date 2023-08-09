@@ -16,7 +16,7 @@ export const sidebarLinks = [
     },
     {
       imgURL: "/assets/create.svg",
-      route: "/create-thread",
+      route: "/create-bread",
       label: "Create Bread",
     },
     {
