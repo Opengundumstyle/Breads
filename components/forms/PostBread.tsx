@@ -18,8 +18,6 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { z } from 'zod';
 import { usePathname,useRouter } from 'next/navigation';
-
-// import { updateUser } from '@/lib/actions/user.actions';
 import { BreadValidation } from '@/lib/validations/thread'
 import { createBread } from '@/lib/actions/bread.actions'
 
@@ -67,35 +65,32 @@ function PostBread({userId}:{userId:string}){
    }
 
      return (
-        <Form {...form}>
-             <form onSubmit={form.handleSubmit(onSubmit)} 
-                className="flex flex-col justify-start gap-10 text-white mt-10">
-            </form>
+      <Form {...form}>
+      <form
+        className='mt-10 flex flex-col justify-start gap-10'
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
+        <FormField
+          control={form.control}
+          name='bread'
+          render={({ field }) => (
+            <FormItem className='flex w-full flex-col gap-3'>
+              <FormLabel className='text-base-semibold text-light-2'>
+                Content
+              </FormLabel>
+              <FormControl className='no-focus border border-dark-4 bg-dark-3 text-light-1'>
+                <Textarea rows={15} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-
-            <FormField
-                control={form.control}
-                name="bread"
-                render={({ field }) => (
-                    <FormItem className='flex flex-col gap-3 w-full'>
-                    <FormLabel className ='text-base-semibold text-white'>
-                          Content
-                    </FormLabel>
-                    <FormControl>
-                        <Textarea
-                           rows={15}
-                           className='no-focus border border-dark-4 bg-dark-3 text-light-1'
-                           {...field}
-                        />
-                    </FormControl>
-                    <FormMessage/>
-                    </FormItem>
-                )}
-                />
-                <Button type="submit" className='bg-primary-500 mt-4 w-full'>
-                          Post Bread
-                </Button>
-        </Form>
+        <Button type='submit' className='bg-primary-500'>
+          Post Thread
+        </Button>
+      </form>
+    </Form>
      )
 }
 
