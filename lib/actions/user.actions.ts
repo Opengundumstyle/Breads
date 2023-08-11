@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import User from "../models/user.model"
+import Bread from "../models/bread.model"
 import { connectToDB } from "../mongoose"
 
 
@@ -66,4 +67,31 @@ export async function fetchUser(userId:string){
       } catch (error:any) {
             throw new Error(`Fail to fetch user:${error.message}`)
       }
+}
+
+
+export async function fetchUserPosts(userId:string){
+     try {
+        connectToDB()
+        // find all breads author by the user with the given user id
+
+        // TODO:populate community
+        const breads = await User.findOne({id:userId}).populate({
+              path:'breads',
+              model:Bread,
+              populate:{
+                  path:'children',
+                  model:Bread,
+                  populate:{
+                      path:'author',
+                      model:User,
+                      select:'name image id'
+                  }
+              }
+              
+        })
+        return breads
+     } catch (error:any) {
+        throw new Error(`Fail to fetch user:${error.message}`)
+     }
 }

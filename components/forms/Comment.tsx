@@ -34,8 +34,8 @@ const Comment = ({ breadId, currentUserImg, currentUserId }: Props) => {
 
   return (
     <div >
-      <form onSubmit={handleSubmit}>
-        <div className="flex w-full items-center gap-3">
+      <form onSubmit={handleSubmit} className='comment-form'>
+        <div className="flex w-full items-center gap-3 flex-row justify-start">
           <label>
             <Image
               src={currentUserImg}
@@ -45,13 +45,13 @@ const Comment = ({ breadId, currentUserImg, currentUserId }: Props) => {
               className="rounded-full object-cover"
             />
           </label>
-          <div className="border-none bg-transparent">
+          <div className="border-none bg-transparent flex-1 w-full h-10">
             <input
               type="text"
               value={comment}
               onChange={handleCommentChange}
               placeholder="Comment..."
-              className="no-focus outline-none rounded-lg"
+              className="no-focus outline-none rounded-lg w-full h-full pl-3"
             />
           </div>
           <button type="submit" className="comment-form_btn">
