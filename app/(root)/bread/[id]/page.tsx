@@ -35,7 +35,7 @@ const Page = async({params}:{params:{id:string}})=>{
                 comments = {bread.children}
             />
         </div>
-        <div className="mt-13">
+        <div className="mt-7">
               <Comment
                 breadId={bread.id}
                 currentUserImg={userInfo.image}
