@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+
 import { Textarea } from "@/components/ui/textarea"
 import { z } from 'zod';
 import { usePathname,useRouter } from 'next/navigation';
@@ -87,7 +88,7 @@ function PostBread({userId}:{userId:string}){
         />
 
         <Button type='submit' className='bg-primary-500'>
-          Post Thread
+          Post Bread
         </Button>
       </form>
     </Form>

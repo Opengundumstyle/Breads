@@ -73,3 +73,85 @@ export async function fetchPosts(pageNumber = 1,pageSize = 20){
        }
 
 }
+
+
+export async function fetchBreadById(id:string){
+
+  connectToDB()
+  try{
+
+     // TODO:Populate Community
+     const bread = await Bread.findById(id)
+                              .populate({
+                                 path:"author",
+                                 model:User,
+                                 select:"_id id name image"
+                              })
+                              .populate({
+                                 path:'children',
+                                 populate:[
+                                   {
+                                     path:'author',
+                                     model:User,
+                                     select:"_id id name parentId image"
+                                   },
+                                   {
+                                     path:"children",
+                                     model:Bread,
+                                     populate:{
+                                       path:"author",
+                                       model:User,
+                                       select:"_id id name parentId image"
+                                     }
+                                   }
+                                 ]
+                              }).exec()
+
+                       return bread
+                    
+    
+  }catch(error:any){
+       throw new Error(`Error fetching bread:${error.message}`)
+  }
+   
+}
+
+
+export async function addCommentToBread(
+     breadId:string,
+     commentText:string,
+     userId:string,
+     path:string
+     ){
+     connectToDB()
+
+     try {
+        //adding a comment
+        const originalBread = await Bread.findById(breadId)
+
+        if(!originalBread){
+           throw new Error("Thread not found")
+        }
+
+        const commentBread = new Bread({
+             text:commentText,
+             author:userId,
+             parentId:breadId
+        })
+
+        //save new bread
+        const savedCommentBread  = await commentBread.save()
+
+        originalBread.children.push(savedCommentBread._id)
+
+        // save original bread
+        await originalBread.save()
+
+        revalidatePath(path)
+
+     } catch (error:any) {
+      throw new Error(`Error fetching bread:${error.message}`)
+       }
+
+
+     }
