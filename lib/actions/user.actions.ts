@@ -148,3 +148,32 @@ export async function fetchUsers({
         throw new Error(`Fail to fetch user:${error.message}`)
      }
 }
+
+
+
+
+export async function getActivity(userId:string){
+     try {
+     
+        connectToDB()
+        // find all breads created by user 
+         const userBreads = await Bread.find({author:userId})
+        // collect all the child bread ids(replies) from the children field
+         const childBreadIds = userBreads.reduce((acc,userBread)=>{
+               return acc.concat(userBread.children)
+         },[])
+         const replies = await Bread.find({ 
+              _id:{$in:childBreadIds},
+              author:{$ne:userId},
+         }).populate({
+             path:'author',
+             model:User,
+             select:'name image _id'
+         })
+
+         return replies
+         
+     } catch (error:any) {
+        throw new Error(`Fail to fetch user:${error.message}`)
+     }
+}
