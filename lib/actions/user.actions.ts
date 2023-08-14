@@ -5,6 +5,7 @@ import User from "../models/user.model"
 import Bread from "../models/bread.model"
 import { connectToDB } from "../mongoose"
 import { FilterQuery, SortOrder } from "mongoose"
+import Community from "../models/community.model"
 
 
 interface Params{
@@ -61,10 +62,10 @@ export async function fetchUser(userId:string){
 
          return await User
                 .findOne({id:userId})
-                // .populate({
-                //       path:'communities',
-                //       model:Comminity
-                // })
+                .populate({
+                      path:'communities',
+                      model:Community
+                })
       } catch (error:any) {
             throw new Error(`Fail to fetch user:${error.message}`)
       }
@@ -76,11 +77,16 @@ export async function fetchUserPosts(userId:string){
         connectToDB()
         // find all breads author by the user with the given user id
 
-        // TODO:populate community
         const breads = await User.findOne({id:userId}).populate({
               path:'breads',
               model:Bread,
-              populate:{
+              populate:[
+                {
+                  path:'community',
+                  model:Bread,
+                  select:'name id image _id'
+                },
+                {
                   path:'children',
                   model:Bread,
                   populate:{
@@ -88,7 +94,7 @@ export async function fetchUserPosts(userId:string){
                       model:User,
                       select:'name image id'
                   }
-              }
+              }]
               
         })
         return breads

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache"
 import Bread from "../models/bread.model"
 import User from "../models/user.model"
+import Community from "../models/community.model"
 import { connectToDB } from "../mongoose"
 
 interface Params{
@@ -21,17 +22,32 @@ export async function createBread({
       try {
     connectToDB();
 
+
+    const communityIdObject = await Community.findOne(
+        {id:communityId},
+        {_id:1}
+    )
+
   
     const createdBread = await Bread.create({
       text,
       author,
-      community:null, // Assign communityId if provided, or leave it null for personal account
+      community:communityIdObject, // Assign communityId if provided, or leave it null for personal account
     });
 
     // Update User model
     await User.findByIdAndUpdate(author, {
       $push: { breads: createdBread._id },
     });
+
+    if(communityIdObject){
+       await Community.findByIdAndUpdate(
+         communityIdObject,{
+           $push:{breads:createdBread._id}
+         }
+       )
+    }
+
 
     revalidatePath(path);
   } catch (error: any) {

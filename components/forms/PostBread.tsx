@@ -21,6 +21,7 @@ import { z } from 'zod';
 import { usePathname,useRouter } from 'next/navigation';
 import { BreadValidation } from '@/lib/validations/thread'
 import { createBread } from '@/lib/actions/bread.actions'
+import { useOrganization } from '@clerk/nextjs'
 
 
 interface Props{
@@ -42,6 +43,7 @@ function PostBread({userId}:{userId:string}){
 
     const router = useRouter()
     const pathname = usePathname()
+    const {organization} = useOrganization()
 
    const form = useForm({
      resolver:zodResolver(BreadValidation),
@@ -52,15 +54,24 @@ function PostBread({userId}:{userId:string}){
 
 
    const onSubmit =async (values:z.infer<typeof BreadValidation>) => {
+      console.log('org id',organization)
+      if(!organization){
+        await createBread({
+          text:values.bread,
+          author:userId,
+          communityId:null,
+          path:pathname
+       })
+      }else{
+        await createBread({
+          text:values.bread,
+          author:userId,
+          communityId:organization.id,
+          path:pathname
+       })
+      }
       
-      await createBread({
-         text:values.bread,
-         author:userId,
-         communityId:null,
-         path:pathname
-
-      })
-
+     
       router.push("/")
      
    }
