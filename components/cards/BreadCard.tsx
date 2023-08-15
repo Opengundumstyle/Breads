@@ -85,7 +85,7 @@ const BreadCard = ({
                  </div>
                      {/**Delete the bread */}
                      {/**todo:show comment logos*/}
-
+                    
                    
              </div>
                      {

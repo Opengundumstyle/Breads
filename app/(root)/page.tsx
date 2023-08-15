@@ -10,7 +10,7 @@ export default async function Home() {
   const results  = await fetchPosts(1,30)
   const user = await currentUser()
 
-  console.log('result',results)
+  console.log('result',results.posts)
 
   return (
     <div>
